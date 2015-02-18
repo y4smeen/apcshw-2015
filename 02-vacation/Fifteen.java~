@@ -1,0 +1,25 @@
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.GridLayout;
+
+public class Fifteen {
+
+    // VARIABLES
+    private final int NUM_ROWS = 4;
+    private final int NUM_COLUMNS = 4;
+
+    JFrame frame = new JFrame();
+    JPanel play;
+    JButton grid;
+
+    public Fifteen() {
+	
+    }
+
+    public void grid(int rows, int columns) {
+	frame.setLayout(new GridLayout(rows, columns));
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.pack();
+	frame.setVisible(true);
+    }
+}
