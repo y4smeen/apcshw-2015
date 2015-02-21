@@ -1,25 +1,68 @@
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.GridLayout;
+import java.awt.event.*;
+import javax.swing.event.*;
+
 
 public class Fifteen {
 
     // VARIABLES
-    private final int NUM_ROWS = 4;
-    private final int NUM_COLUMNS = 4;
+    private int ROWS = 4;
+    private int COLS = 4;
 
-    JFrame frame = new JFrame();
-    JPanel play;
-    JButton grid;
+    JFrame frame = new JFrame("Fifteen Puzzle");
+    private JButton[][] grid;
 
     public Fifteen() {
-	
+	grid(ROWS, COLS);
     }
 
-    public void grid(int rows, int columns) {
-	frame.setLayout(new GridLayout(rows, columns));
+    public void grid(int rows, int cols) {
+	frame.setLayout(new GridLayout(rows, cols));
+	grid = new JButton[rows][cols];
+	int tile = 1;
+
+	for(int col = 0; col < cols; col++) {
+	    for(int row = 0; row < rows; row++) {
+		if(tile < 16) {
+		    grid[row][col] = new JButton(Integer.toString(tile));
+		    frame.add(grid[row][col]);
+		    tile++;
+		} else {
+		    grid[row][col] = new JButton();
+		    frame.add(grid[row][col]);
+		}
+	    }
+	}
+
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.pack();
 	frame.setVisible(true);
+	frame.setResizable(false);
+    }
+
+    public int getNumberOfRows() {
+	return ROWS;
+    }
+
+    public int getNumberOfCols() {
+	return COLS;
+    }
+
+    public void shuffle() {
+	for(int row = 0; row < ROWS; row++) {
+	    for(int col = 0; col < COLS; col++) {
+		switch(row, col, (int)(Math.random() * ROWS), (int)(Math.random() * COLS));
+	    }
+	}
+    }
+    
+    public void switch(int r1, int c1, int r2, int c2) {
+	int holdTile = 
+    }
+
+    public static void main(String[] args) {
+	Fifteen fifteen = new Fifteen();
     }
 }
