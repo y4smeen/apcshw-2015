@@ -1,9 +1,13 @@
 import java.io.*;
 import java.util.*;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Fifteen2 {
 
   private String[][] board; // actual game board
+  private List<String> numList = new ArrayList<String>();
   private int dim; // board dimension
   private int size = dim * dim; // total number of spaces on board
   private Random random = new Random();
@@ -11,26 +15,27 @@ public class Fifteen2 {
   public Fifteen2() {
     dim = 4;
     board = new String[dim][dim];
-    int num = 1;
+    int num = 0;
+    String numString = "";
     for (int y = 0; y < dim; y++) {
       for (int x = 0; x < dim; x++) {
-        if (num < 10) {
-          board[x][y] = "0" + Integer.toString(num);
-          num++;
+        if (num == 0){
+          numString = "00";
         }
-        else if (num > 9 && num < 16) {
-          board[x][y] = Integer.toString(num);
-          num++;
+        else if (num > 0 && num < 10) {
+          numString = "0" + Integer.toString(num);
         }
         else {
-          board[x][y] = "00";
+          numString = Integer.toString(num);
         }
+        board[x][y] = numString;
+        numList.add(numString);
+        num++;
       }
     }
   }
 
   public String toString() {
-    // String s = "[2J\n";
     String s = "\n";
     int count = 1;
     for (int y = 0; y < dim; y++) {
@@ -46,15 +51,12 @@ public class Fifteen2 {
   }
 
   public void shuffle() {
-    for (int i = size; i > 1; i--) {
-        exchange(i - 1, random.nextInt(i));
+    Collections.shuffle(numList);
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        board[i][j] = numList.get(j + i * dim);
+      }
     }
-  }
-
-  public void exchange(int x, int y) {
-    String temp = board[x / dim][x % dim];
-    board[x / dim][x % dim] = board[y / dim][y % dim];
-    board[y / dim][y % dim] = temp;
   }
 
   public static void main(String[] args) {
