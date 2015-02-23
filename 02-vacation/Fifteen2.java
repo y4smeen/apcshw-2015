@@ -59,6 +59,14 @@ public class Fifteen2 {
     }
   }
 
+  public boolean isSolvable() {
+    return false;
+  }
+
+  public void solve() {
+    System.out.println("solve");
+  }
+
   public static void main(String[] args) {
     Fifteen2 f = new Fifteen2();
     System.out.println(f);
