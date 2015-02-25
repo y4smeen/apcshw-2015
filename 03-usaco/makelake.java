@@ -10,10 +10,10 @@ public class makelake {
       while (sc.hasNext()) {
         Int num = sc.nextInt();
         R = num;
-        
+
 
         /*
-        for (int i = 0; i < ) {
+        for (int i = 0; i < R) {
 
         }
         */
