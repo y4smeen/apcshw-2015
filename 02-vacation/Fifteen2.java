@@ -3,6 +3,7 @@ import java.util.*;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.*;
 
 public class Fifteen2 {
 
@@ -14,6 +15,8 @@ public class Fifteen2 {
   private int heuristic = 0;
   private Random random = new Random();
 
+  private String[][] test = new String[dim][dim]; // try out all moves for heuristic
+
   public Fifteen2() {
     this.init();
   }
@@ -21,6 +24,7 @@ public class Fifteen2 {
   public void init() {
     dim = 4;
     board = new String[dim][dim];
+    origin = new String[dim][dim];
     int num = 0;
     String numString = "";
     for (int y = 0; y < dim; y++) {
@@ -35,15 +39,15 @@ public class Fifteen2 {
           numString = Integer.toString(num);
         }
         board[x][y] = numString;
+        origin[x][y] = numString;
         numList.add(numString);
         num++;
       }
     }
-    origin = board;
+    // origin = board;
   }
 
   public String toString() {
-    // String s = "\n";
     String s = "";
     int count = 1;
     for (int y = 0; y < dim; y++) {
@@ -70,41 +74,38 @@ public class Fifteen2 {
 
   public void smartShuffle() {
     Random randShuffle = new Random();
-    Random tile = new Random();
-    for (int i = 0; i < 100; i++){
-      String coord = getCoord(board, tile.nextInt(16));
+    // Random tile = new Random();
+    for (int i = 0; i < 1000; i++){
+      String coord = getCoord(board, 0);
       int x = Integer.parseInt(coord.substring(0, 1));
       int y = Integer.parseInt(coord.substring(1));
       int z = moveLimit(coord);
       int move = randShuffle.nextInt(4);
 
-      // System.out.println("Move limit: " + z);
-      // System.out.println("Coordinate: " + x + ", " + y);
-
       // 0: move up
       if (move == 0 && z != 2 && z != 8 && z != 10) {
-        swap(x, y, x, y - 1);
+        swap(board, x, y, x, y - 1);
       }
       // 1: move down
       else if (move == 1 && z % 3 != 0) {
-        swap(x, y, x, y + 1);
+        swap(board, x, y, x, y + 1);
       }
       // 2: move right
       else if (move == 2 && z % 4 != 0) {
-        swap(x, y, x + 1, y);
+        swap(board, x, y, x + 1, y);
       }
       // 3: move left
       else if (move == 3 && z % 5 != 0) {
-        swap(x, y, x - 1, y);
+        swap(board, x, y, x - 1, y);
       }
     }
   }
 
   // x1, y1 is swapped with x2, y2
-  public void swap(int x1, int y1, int x2, int y2) {
-    String hold = board[x2][y2];
-    board[x2][y2] = board[x1][y1];
-    board[x1][y1] = hold;
+  public void swap(String[][] array, int x1, int y1, int x2, int y2) {
+    String hold = array[x2][y2];
+    array[x2][y2] = array[x1][y1];
+    array[x1][y1] = hold;
   }
 
   public int moveLimit(String coord) {
@@ -129,12 +130,8 @@ public class Fifteen2 {
       if (x == 0) {
         special = 5; // 5,10,15
       }
-      // 5:
     }
-
-    // System.out.println("in moveLimit: " + limit + "*" + special);
     return limit*special;
-
   }
 
   // Checks if two spots are next to each other
@@ -156,25 +153,75 @@ public class Fifteen2 {
     int y1 = Integer.parseInt(coord1.substring(1));
     int x2 = Integer.parseInt(coord2.substring(0, 1));
     int y2 = Integer.parseInt(coord2.substring(1));
-    System.out.println("Coord2: " + x2 + ", " + y2);
-    int s = x1 - x2;
-    System.out.println("abs val: " + s);
-    // System.out.println(Math.abs(x1 - x2) + Math.abs(y1 - y2));
-    // return Math.abs(x1 - x2) + Math.abs(y1 - y2);
-    return x1 - x2;
+
+    System.out.println(Math.abs(x1 - x2) + Math.abs(y1 - y2));
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
   }
 
-  public int totalDist() {
+  // Gets total manhattanDists
+  public int heuristic(String[][] array) {
     int sum = 0;
     String coord1, coord2;
     for (int i = 0; i < size; i++) {
       coord1 = getCoord(origin, i);
-      coord2 = getCoord(board, i);
+      coord2 = getCoord(array, i);
+      System.out.println("lol");
       sum += manhattanDist(coord1, coord2);
     }
-    // System.out.println(sum);
     heuristic = sum;
     return sum;
+  }
+
+  // Finds lowest, >= than 0
+  public int findMin(int u, int d, int r, int l) {
+    return Math.min(Math.min(u, d), Math.min(r, l));
+  }
+
+  // Finds move that leads to the lowest manhattanDist
+  /*
+  public int findNext() {
+    String coord = getCoord(board, 0);
+    int x = Integer.parseInt(coord.substring(0, 1));
+    int y = Integer.parseInt(coord.substring(1));
+    int z = moveLimit(coord);
+
+    int u = -1, d = -1, r = -1, l = -1;
+
+    // 0: move up
+    if (move == 0 && z != 2 && z != 8 && z != 10) {
+      swap(test, x, y, x, y - 1);
+      u = heuristic();
+      test = board;
+    }
+    // 1: move down
+    else if (move == 1 && z % 3 != 0) {
+      swap(x, y, x, y + 1);
+    }
+    // 2: move right
+    else if (move == 2 && z % 4 != 0) {
+      swap(x, y, x + 1, y);
+    }
+    // 3: move left
+    else if (move == 3 && z % 5 != 0) {
+      swap(x, y, x - 1, y);
+    }
+  }
+  */
+
+  // Finds number of possible moves
+  public int numMoves() {
+    int moves = 4;
+    String coord = getCoord(board, 0);
+    int x = Integer.parseInt(coord.substring(0, 1));
+    int y = Integer.parseInt(coord.substring(1));
+    int z = moveLimit(coord);
+    if (z == 2 || z == 3) {
+      moves = 3;
+    }
+    else if (z > 3) {
+      moves = 2;
+    }
+    return moves;
   }
 
   // Heuristically solves the 15 Puzzle
@@ -203,7 +250,7 @@ public class Fifteen2 {
     f.smartShuffle();
     System.out.println(f);
     f.manhattanDist(f.getCoord(f.origin, 4), f.getCoord(f.board, 4));
-    f.totalDist();
+    System.out.println(f.heuristic(f.board));
     System.out.println(f.heuristic);
     f.solve();
   }
