@@ -170,11 +170,14 @@ public class Fifteen2 {
   public int heuristic(String[][] array) {
     int sum = 0;
     String coord1, coord2;
-    for (int i = 0; i < size; i++) {
+    // System.out.println("start heuristic");
+    int i = 0;
+    while (i < size) {
       coord1 = getCoord(origin, i);
       coord2 = getCoord(array, i);
       System.out.println("lol");
       sum += manhattanDist(coord1, coord2);
+      i++;
     }
     heuristic = sum;
     return sum;
@@ -190,18 +193,9 @@ public class Fifteen2 {
     else return 0;
   }
 
-  // Makes test = board
-  public void reset() {
-    for (int i = 0; i < dim; i++) {
-      for (int j = 0; j < dim; j++) {
-        test[j][i] = board[j][i];
-      }
-    }
-  }
-
   // Checks all possible moves to find the lowest manhattanDist
   public int checkNext() {
-    String coord = getCoord(test, 0);
+    String coord = getCoord(board, 0);
     int x = Integer.parseInt(coord.substring(0, 1));
     int y = Integer.parseInt(coord.substring(1));
     int z = moveLimit(coord);
@@ -210,27 +204,27 @@ public class Fifteen2 {
 
     // 0: move up
     if (z != 2 && z != 8 && z != 10) {
-      swap(test, x, y, x, y - 1);
-      u = heuristic(test);
-      reset();
+      swap(board, x, y, x, y - 1);
+      u = heuristic(board);
+      swap(board, x, y, x, y - 1);
     }
     // 1: move down
     else if (z % 3 != 0) {
-      swap(test, x, y, x, y + 1);
-      d = heuristic(test);
-      reset();
+      swap(board, x, y, x, y + 1);
+      d = heuristic(board);
+      swap(board, x, y, x, y + 1);
     }
     // 2: move right
     else if (z % 4 != 0) {
-      swap(test, x, y, x + 1, y);
-      r = heuristic(test);
-      reset();
+      swap(board, x, y, x + 1, y);
+      r = heuristic(board);
+      swap(board, x, y, x + 1, y);
     }
     // 3: move left
     else if (z % 5 != 0) {
-      swap(test, x, y, x - 1, y);
-      l = heuristic(test);
-      reset();
+      swap(board, x, y, x - 1, y);
+      l = heuristic(board);
+      swap(board, x, y, x - 1, y);
     }
     return findMin(u, d, r, l);
   }
@@ -253,11 +247,22 @@ public class Fifteen2 {
 
   // Heuristically solves the 15 Puzzle
   public void solve() {
-    if (checkNext() = 1) {
+
+    String coord = getCoord(board, 0);
+    int x = Integer.parseInt(coord.substring(0, 1));
+    int y = Integer.parseInt(coord.substring(1));
+
+    if (checkNext() == 1 || checkNext() == 0) {
       swap(board, x, y, x, y - 1);
     }
-    else if() {
-      
+    else if (checkNext() == 2) {
+      swap(board, x, y, x, y + 1);
+    }
+    else if (checkNext() == 3) {
+      swap(board, x, y, x + 1, y);
+    }
+    else if (checkNext() == 4) {
+      swap(board, x, y, x + 1, y);
     }
     System.out.println("solve");
   }
