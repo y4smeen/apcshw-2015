@@ -15,7 +15,7 @@ public class Fifteen2 {
   private int heuristic = 0;
   private Random random = new Random();
 
-  private String[][] test = new String[dim][dim]; // try out all moves for heuristic
+  private String[][] test; // try out all moves for heuristic
 
   public Fifteen2() {
     this.init();
@@ -25,6 +25,7 @@ public class Fifteen2 {
     dim = 4;
     board = new String[dim][dim];
     origin = new String[dim][dim];
+    test = new String[dim][dim];
     int num = 0;
     String numString = "";
     for (int y = 0; y < dim; y++) {
@@ -38,8 +39,11 @@ public class Fifteen2 {
         else {
           numString = Integer.toString(num);
         }
+
         board[x][y] = numString;
         origin[x][y] = numString;
+        test[x][y] = numString;
+
         numList.add(numString);
         num++;
       }
@@ -85,18 +89,22 @@ public class Fifteen2 {
       // 0: move up
       if (move == 0 && z != 2 && z != 8 && z != 10) {
         swap(board, x, y, x, y - 1);
+        swap(test, x, y, x, y - 1);
       }
       // 1: move down
       else if (move == 1 && z % 3 != 0) {
         swap(board, x, y, x, y + 1);
+        swap(test, x, y, x, y + 1);
       }
       // 2: move right
       else if (move == 2 && z % 4 != 0) {
         swap(board, x, y, x + 1, y);
+        swap(test, x, y, x + 1, y);
       }
       // 3: move left
       else if (move == 3 && z % 5 != 0) {
         swap(board, x, y, x - 1, y);
+        swap(test, x, y, x - 1, y);
       }
     }
   }
@@ -174,13 +182,26 @@ public class Fifteen2 {
 
   // Finds lowest, >= than 0
   public int findMin(int u, int d, int r, int l) {
-    return Math.min(Math.min(u, d), Math.min(r, l));
+    int min = Math.min(Math.min(u, d), Math.min(r, l));
+    if (min == u) return 1; // move up
+    else if (min == d) return 2; // move down
+    else if (min == r) return 3; // move right
+    else if (min == l) return 4; // move left
+    else return 0;
   }
 
-  // Finds move that leads to the lowest manhattanDist
-  /*
-  public int findNext() {
-    String coord = getCoord(board, 0);
+  // Makes test = board
+  public void reset() {
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        test[j][i] = board[j][i];
+      }
+    }
+  }
+
+  // Checks all possible moves to find the lowest manhattanDist
+  public int checkNext() {
+    String coord = getCoord(test, 0);
     int x = Integer.parseInt(coord.substring(0, 1));
     int y = Integer.parseInt(coord.substring(1));
     int z = moveLimit(coord);
@@ -188,25 +209,31 @@ public class Fifteen2 {
     int u = -1, d = -1, r = -1, l = -1;
 
     // 0: move up
-    if (move == 0 && z != 2 && z != 8 && z != 10) {
+    if (z != 2 && z != 8 && z != 10) {
       swap(test, x, y, x, y - 1);
-      u = heuristic();
-      test = board;
+      u = heuristic(test);
+      reset();
     }
     // 1: move down
-    else if (move == 1 && z % 3 != 0) {
-      swap(x, y, x, y + 1);
+    else if (z % 3 != 0) {
+      swap(test, x, y, x, y + 1);
+      d = heuristic(test);
+      reset();
     }
     // 2: move right
-    else if (move == 2 && z % 4 != 0) {
-      swap(x, y, x + 1, y);
+    else if (z % 4 != 0) {
+      swap(test, x, y, x + 1, y);
+      r = heuristic(test);
+      reset();
     }
     // 3: move left
-    else if (move == 3 && z % 5 != 0) {
-      swap(x, y, x - 1, y);
+    else if (z % 5 != 0) {
+      swap(test, x, y, x - 1, y);
+      l = heuristic(test);
+      reset();
     }
+    return findMin(u, d, r, l);
   }
-  */
 
   // Finds number of possible moves
   public int numMoves() {
@@ -226,6 +253,12 @@ public class Fifteen2 {
 
   // Heuristically solves the 15 Puzzle
   public void solve() {
+    if (checkNext() = 1) {
+      swap(board, x, y, x, y - 1);
+    }
+    else if() {
+      
+    }
     System.out.println("solve");
   }
 
@@ -253,6 +286,7 @@ public class Fifteen2 {
     System.out.println(f.heuristic(f.board));
     System.out.println(f.heuristic);
     f.solve();
+    // System.out.println(f.findMin(2,1,3,4));
   }
 
 }
