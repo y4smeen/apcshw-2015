@@ -11,6 +11,7 @@ public class Fifteen2 {
   private List<String> numList = new ArrayList<String>();
   private int dim; // board dimension
   private int size = dim * dim; // total number of spaces on board
+  private int heuristic = 0;
   private Random random = new Random();
 
   public Fifteen2() {
@@ -42,7 +43,8 @@ public class Fifteen2 {
   }
 
   public String toString() {
-    String s = "\n";
+    // String s = "\n";
+    String s = "";
     int count = 1;
     for (int y = 0; y < dim; y++) {
       for (int x = 0; x < dim; x++) {
@@ -154,8 +156,12 @@ public class Fifteen2 {
     int y1 = Integer.parseInt(coord1.substring(1));
     int x2 = Integer.parseInt(coord2.substring(0, 1));
     int y2 = Integer.parseInt(coord2.substring(1));
-
-    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    System.out.println("Coord2: " + x2 + ", " + y2);
+    int s = x1 - x2;
+    System.out.println("abs val: " + s);
+    // System.out.println(Math.abs(x1 - x2) + Math.abs(y1 - y2));
+    // return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    return x1 - x2;
   }
 
   public int totalDist() {
@@ -166,6 +172,8 @@ public class Fifteen2 {
       coord2 = getCoord(board, i);
       sum += manhattanDist(coord1, coord2);
     }
+    // System.out.println(sum);
+    heuristic = sum;
     return sum;
   }
 
@@ -188,13 +196,16 @@ public class Fifteen2 {
 
   public static void main(String[] args) {
     Fifteen2 f = new Fifteen2();
+    System.out.println();
     System.out.println("Original Board");
     System.out.println(f);
     System.out.println("Shuffled Board");
     f.smartShuffle();
     System.out.println(f);
-
-
+    f.manhattanDist(f.getCoord(f.origin, 4), f.getCoord(f.board, 4));
+    f.totalDist();
+    System.out.println(f.heuristic);
+    f.solve();
   }
 
 }
