@@ -13,6 +13,8 @@ public class Fifteen2 {
   private int dim; // board dimension
   private int size = dim * dim; // total number of spaces on board
   private int heuristic = 0;
+  private int totalMoves = 0;
+  private int lastMove = 0;
   private Random random = new Random();
 
   private String[][] test; // try out all moves for heuristic
@@ -162,7 +164,7 @@ public class Fifteen2 {
     int x2 = Integer.parseInt(coord2.substring(0, 1));
     int y2 = Integer.parseInt(coord2.substring(1));
 
-    System.out.println(Math.abs(x1 - x2) + Math.abs(y1 - y2));
+    // System.out.println(Math.abs(x1 - x2) + Math.abs(y1 - y2));
     return Math.abs(x1 - x2) + Math.abs(y1 - y2);
   }
 
@@ -171,13 +173,11 @@ public class Fifteen2 {
     int sum = 0;
     String coord1, coord2;
     // System.out.println("start heuristic");
-    int i = 0;
-    while (i < size) {
+
+    for (int i = 0; i < dim*dim; i++) {
       coord1 = getCoord(origin, i);
       coord2 = getCoord(array, i);
-      System.out.println("lol");
       sum += manhattanDist(coord1, coord2);
-      i++;
     }
     heuristic = sum;
     return sum;
@@ -247,24 +247,59 @@ public class Fifteen2 {
 
   // Heuristically solves the 15 Puzzle
   public void solve() {
-
+    // boolean tryAgain = false;
     String coord = getCoord(board, 0);
     int x = Integer.parseInt(coord.substring(0, 1));
     int y = Integer.parseInt(coord.substring(1));
+    boolean done = false;
+    while (heuristic(board) > 0) {
+      System.out.println("Next move: " + checkNext());
+      int n = checkNext();
+      while (done = false) {
+        if (n == 1 && lastMove != 2) {
+          swap(board, x, y, x, y - 1);
+          lastMove = 1;
+          done = true;
+        }
+        else if (n == 1 && lastMove == 2) {
+          if (x + 1 < dim) n = 3;
+          else n = 4;
+        }
+        else if (n == 2 && lastMove!= 1) {
+          swap(board, x, y, x, y + 1);
+          lastMove = 2;
+          done = true;
+        }
+        else if(n == 2 && lastMove == 1) {
+          if (x + 1 < dim) n = 3;
+          else n = 4;
+        }
+        else if (n == 3 && lastMove != 4) {
+          swap(board, x, y, x + 1, y);
+          lastMove = 3;
+          done = true;
+        }
+        else if (n == 3 && lastMove == 4) {
+          if (y - 1 >= 0) n = 1;
+          else n = 2;
+        }
+        else if (n == 4 && lastMove != 3) {
+          swap(board, x, y, x - 1, y);
+          lastMove = 4;
+          done = true;
+        }
+        else if (n == 4 && lastMove == 3) {
+          if (y - 1 >= 0) n = 1;
+          else n = 2;
+        }
+      }
 
-    if (checkNext() == 1 || checkNext() == 0) {
-      swap(board, x, y, x, y - 1);
+      totalMoves++;
+      System.out.println("Move " + totalMoves);
+      System.out.println(this);
+      System.out.println("Last Move: " + lastMove);
+      //System.out.println()
     }
-    else if (checkNext() == 2) {
-      swap(board, x, y, x, y + 1);
-    }
-    else if (checkNext() == 3) {
-      swap(board, x, y, x + 1, y);
-    }
-    else if (checkNext() == 4) {
-      swap(board, x, y, x + 1, y);
-    }
-    System.out.println("solve");
   }
 
   // Returns coordinates of a number in an array in the form "xy"
@@ -288,8 +323,9 @@ public class Fifteen2 {
     f.smartShuffle();
     System.out.println(f);
     f.manhattanDist(f.getCoord(f.origin, 4), f.getCoord(f.board, 4));
-    System.out.println(f.heuristic(f.board));
-    System.out.println(f.heuristic);
+    f.heuristic(f.board);
+    // System.out.println(f.heuristic(f.board));
+    // System.out.println("Heuristic: " + f.heuristic);
     f.solve();
     // System.out.println(f.findMin(2,1,3,4));
   }
