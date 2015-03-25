@@ -19,11 +19,11 @@ public class myStack<E>{
     public E pop(){
         // remove and return the top item from the stack
         if (empty()) return -1;
-        else {
-          tmp = s.getData();
-          l = l.getNext();
-          return tmp;
-        }
+
+        tmp = s.getData();
+        l = l.getNext();
+        return tmp;
+
     }
 
     public boolean empty(){
