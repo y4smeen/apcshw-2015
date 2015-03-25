@@ -49,6 +49,7 @@ public class Driver{
 				}
 				System.out.println();
 
+				//l.remove(4);
 
 		}
 }
