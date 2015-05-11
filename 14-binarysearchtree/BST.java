@@ -49,12 +49,43 @@ public class BST{
 		}
 
 		public String traverse(Node t){
-			if (t.getRight() != null) {
+			// in order traversal
+			if (t == null) return "";
+			else {
+				return traverse(t.getLeft()) +
+				t.getData() + ", " +
 				traverse(t.getRight());
 			}
-			if (t.getLeft() != null) {
-				traverse(t.getLeft());
+			/* preorder traversal
+			else {
+			return t.getData() + ", " +
+			traverse(t.getLeft()) +
+			traverse(t,getRight());
 			}
+			*/
+		}
+		/* remove
+				1. use the search part of insert to get a pointer
+				t to the node we want to move and t2 to its parent
+				(insert searches until null, we stop when
+				t.getData() == thing to delete)
+				2. first 2 cases can be combined
+					a. t is a leaf
+					point t2's left or right to null (as appropriate)
+					b. t has 1 child
+					point t2's left or right to t's non null child
+					c. t has 2 children
+						i. find largest on left subtree (or smallest
+						in right)
+						L = t.getLeft();
+						while (L.getRight() != null)
+							L = L.getRight();
+						ii. copy the data from L into t
+						iii. remove (t.getLeft(), L.getData())
+		*/
+		public void remove(Node n, int i) {
+			search(n, i);
+			
 		}
 		public String toString(){
 				return traverse(r);
